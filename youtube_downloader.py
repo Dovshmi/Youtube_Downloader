@@ -8,7 +8,7 @@ def download_video(url, output_path="."):
     print(f"Downloading video: {yt.title}")
     video_stream.download(output_path)
     print("Download complete!")
-
+#i just added some code
 def download_audio(url, output_path="."):
     yt = YouTube(url)
     audio_stream = yt.streams.filter(only_audio=True).first()
