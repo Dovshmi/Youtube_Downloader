@@ -2,12 +2,13 @@ import customtkinter as ctk
 import os
 from pytube import YouTube, Playlist
 
-def download_video(url, output_path="."):
+def download_video(url,res,output_path="."):
     yt = YouTube(url)
-    video_stream = yt.streams.filter(file_extension="mp4", progressive=True).first()
+    video_stream = yt.streams.filter(file_extension="mp4", progressive=True,resolution=res).first()
     print(f"Downloading video: {yt.title}")
     video_stream.download(output_path)
     print("Download complete!")
+    
 def download_audio(url, output_path="."):
     yt = YouTube(url)
     audio_stream = yt.streams.filter(only_audio=True).first()
@@ -15,18 +16,16 @@ def download_audio(url, output_path="."):
     audio_stream.download(output_path)
     print("Download complete!")
 
-def download_playlist(playlist_url, output_path=".", download_videos=True):
+def download_playlist(playlist_url,res , output_path=".", download_videos=True):
     playlist = Playlist(playlist_url)
     print(f"Downloading playlist: {playlist.title}")
-
     for video_url in playlist.video_urls:
         if download_videos:
-            download_video(video_url, output_path)
+            download_video(video_url, output_path,res)
         else:
             download_audio(video_url, output_path)
-
     print("Playlist download complete!")
-
+    
 def create_gui():
     root = ctk.CTk()
     root.title("YouTube Downloader")
@@ -44,8 +43,15 @@ def create_gui():
         print (answer)
         if answer==0:
            switch_download_option.configure(text="Audio")
+           combobox.configure(values=["mp3","wav"],state="normal")
+           combobox.set("mp3")
         if answer==1:
             switch_download_option.configure(text="Video")
+            combobox.configure(values=["360p", "480p", "720p", "1080p"],state="normal")
+            combobox.set("720p")
+    
+    combobox = ctk.CTkComboBox(root, values=[""],state="disabled")
+    combobox.pack(pady=10)
     switch_download_option = ctk.CTkSwitch(root, text="Audio",command=switchname)
     switch_download_option.pack(pady=10)
 
@@ -58,10 +64,12 @@ def create_gui():
         download_option = "video" if switch_download_option.get() else "audio"
 
         if "playlist" in url.lower():
-            download_playlist(url, download_videos=download_option == "video")
+            res=combobox.get()
+            download_playlist(url,res, download_videos=download_option == "video")
         else:
             if download_option == "video":
-                download_video(url)
+                res=combobox.get()
+                download_video(url,res)
             else:
                 download_audio(url)
 
