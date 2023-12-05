@@ -74,7 +74,6 @@ def create_gui():
                 download_audio(url)
 
     button_download.configure(command=download_clicked)
-
     root.mainloop()
 
 if __name__ == "__main__":
