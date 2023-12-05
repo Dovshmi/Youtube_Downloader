@@ -4,7 +4,12 @@ from pytube import YouTube, Playlist
 
 def download_video(url,res,output_path="."):
     yt = YouTube(url)
-    video_stream = yt.streams.filter(file_extension="mp4", progressive=True,resolution=res).first()
+    print("res: "+str(res))
+    
+    streams=yt.streams
+    for stream in streams:
+        print(stream.resolution)
+    video_stream = yt.streams.filter(file_extension="mp4", progressive=True,resolution=str(res)).first()
     print(f"Downloading video: {yt.title}")
     video_stream.download(output_path)
     print("Download complete!")
@@ -47,7 +52,7 @@ def create_gui():
            combobox.set("mp3")
         if answer==1:
             switch_download_option.configure(text="Video")
-            combobox.configure(values=["360p", "480p", "720p", "1080p"],state="normal")
+            combobox.configure(values=["360p","720p"],state="normal")
             combobox.set("720p")
     
     combobox = ctk.CTkComboBox(root, values=[""],state="disabled")
